@@ -13,8 +13,8 @@
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.20.8",
     "minipass": "^3.1.1",
-    "pg": "^7.18.1",
-    "sqlite3": "^4.1.1"
+    "node-pre-gyp": "^0.14.0",
+    "pg": "^7.18.1"
   },
   "devDependencies": {
     "nodemon": "^1.19.1"
