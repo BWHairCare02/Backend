@@ -1,5 +1,4 @@
-// Update with your config settings.
-const db ="https://haircare-backend-dingo.herokuapp.com/"
+require('dotenv').config();
 
 module.exports = {
 
@@ -35,7 +34,7 @@ module.exports = {
 
   production: {
     client: 'pg',
-    connection: process.env.DB_ENV,
+    connection: process.env.DATABASE_URL,
     migrations: {
       directory: "./data/migrations",
     },
