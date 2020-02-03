@@ -1,5 +1,13 @@
 const db = require('../data/dbConfig')
 
+function get() {
+    return db('stylists').select('username','location','email')
+}
+
+function getById(id) {
+    return db('stylists')//
+}
+
 function find() {
     return db('stylists').select('id','username')
 }
@@ -23,6 +31,7 @@ function findById(id) {
 }
 
 module.exports = {
+    get,
     add,
     find,
     findBy,
