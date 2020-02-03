@@ -41,10 +41,6 @@ router.post('/login', (req, res) => {
       .then(stylists => res.status(200).json(stylists))
       .catch(err => res.status(500).json(err))
   })
-
-  router.get('/:id', authenticate, (req, res) => {
-    Stylists.
-  })
   
   function signToken(user) {
     const payload = {
