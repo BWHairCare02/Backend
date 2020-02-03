@@ -44,6 +44,7 @@ The token for a user can only be used to perform actions for that user specifica
 ### Customer Accounts
 ****
 **Login**
+
 Route:
 `/customer/login`
 
