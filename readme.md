@@ -1,6 +1,6 @@
 # Haircare Backend - API & Database
 
-Deployed URL: TBD
+Deployed URL: https://haircare-backend-dingo.herokuapp.com/
 
 A GET request to the base URL should return a JSON object like this:
 ```
@@ -25,21 +25,23 @@ The token for a user can only be used to perform actions for that user specifica
 |`/stylist/login`| POST | Send user credentials for a stylist to login to the application | No |
 |`/stylist/register`| POST | Send user credentials for a stylist to login to the application | No |
 |---|---|---|---|
-|`/customer/:id`| GET | Retrieve data for a customer based on ID | Yes |
-|`/customer/:id`| PUT | Allows updates to a customer's information | Yes |
-|`/customer/:id/reviews`| POST | Adds a review for a customer | Yes |
-|`/customer/:id/reviews`| GET | Gets all reviews for a customer | Yes |
+|`/customer/:customerId`| GET | Retrieve data for a customer based on ID | Yes |
+|`/customer/:customerId`| PUT | Allows updates to a customer's information | Yes |
+|`/customer/:customerId/reviews`| POST | Adds a review for a customer | Yes |
+|`/customer/:customerId/reviews`| GET | Gets all reviews for a customer | Yes | 
+|`/customer/:customerId/reviews/:reviewId`| GET | Gets a customer's review by the review ID | Yes |
 |`/customer/:customerId/reviews/:reviewId`| PUT | Allows a customer to update a review | Yes |
 |`/customer/:customerId/reviews/:reviewId`| DELETE | Deletes a customer's review | Yes |
 |---|---|---|---|
 |`/stylist`| GET | Retrieve a list of all stylists in the database | Yes |
-|`/stylist/:id`| GET | Retrieve stylist profile based on ID | Yes |
-|`/stylist/:id`| PUT | Allows updates to a stylist's information | Yes |
-|`/stylist/:id`| DELETE | Deletes a stylist's profile | Yes |
-|`/stylist/:id/posts`| GET | Retrieve a stylist's image posts | Yes |
-|`/stylist/:id/posts`| POST | Allows a stylist to add a new image post | Yes |
-|`/stylist/:stylistId/posts/:postId`| PUT | Update a stylist's image post | Yes |
-|`/stylist/:stylistId/posts/:postId`| DELETE | Deletes a stylist's image post | Yes |
+|`/stylist/:stylistId`| GET | Retrieve stylist profile based on ID | Yes |
+|`/stylist/:stylistId`| PUT | Allows updates to a stylist's information | Yes |
+|`/stylist/:stylistId`| DELETE | Deletes a stylist's profile | Yes |
+|`/stylist/:stylistId/reviews`| GET | Get all reviews relating to a stylist | Yes |
+|`/stylist/:stylistId/portfolio`| GET | Retrieve a stylist's image posts | Yes |
+|`/stylist/:stylistId/portfolio`| POST | Allows a stylist to add a new image post | Yes |
+|`/stylist/:stylistId/portfolio/:postId`| PUT | Update a stylist's image post | Yes |
+|`/stylist/:stylistId/portfolio/:postId`| DELETE | Deletes a stylist's image post | Yes |
 
 ### Customer Accounts
 ****
@@ -175,7 +177,7 @@ Registered stylist object
 **Get customer profile**
 
 Route:
-`/customer/:id`
+`/customer/:customerId`
 
 Method:
 `GET`
@@ -196,7 +198,7 @@ Customer object
 **Update customer profile**
 
 Route:
-`/customer/:id`
+`/customer/:customerId`
 
 Method:
 `PUT`
@@ -226,7 +228,7 @@ Updated customer object
 **Add customer review**
 
 Route:
-`/customer/:id/reviews`
+`/customer/:customerId/reviews`
 
 Method:
 `POST`
@@ -264,7 +266,7 @@ Created review object
 **Get customer reviews**
 
 Route:
-`/customer/:id/reviews`
+`/customer/:customerId/reviews`
 
 Method:
 `GET`
@@ -379,7 +381,7 @@ Array of stylist objects
 **Get stylist profile**
 
 Route:
-`/stylist/:id`
+`/stylist/:stylistId`
 
 Method:
 `GET`
@@ -400,7 +402,7 @@ Stylist object
 **Update stylist profile**
 
 Route:
-`/stylist/:id`
+`/stylist/:stylistId`
 
 Method:
 `PUT`
@@ -430,7 +432,7 @@ Updated stylist object
 **Delete stylist profile**
 
 Route:
-`/stylist/:id`
+`/stylist/:stylistId`
 
 Method:
 `DELETE`
@@ -448,10 +450,35 @@ Deleted stylist object
 }
 ```
 ****
-**Get stylist posts list**
+**Get stylist reviews**
 
 Route:
-`/stylist/:id/posts`
+`/stylist/:stylistId/reviews`
+
+Method:
+`GET`
+
+Description:
+Gets all customers' reviews for a stylist based on the stylist's ID.
+
+Returns:
+Array of reviews for a stylist. Reviews are structured to show the review's id, description, and rating, as well as the associated stylist's username and location.
+```
+[
+    {
+        "id": integer,
+        "description": string,
+        "rating": integer,
+        "username": string,
+        "location": string
+    }
+]
+```
+****
+**Get stylist portfolio**
+
+Route:
+`/stylist/:stylistId/portfolio`
 
 Method:
 `GET`
@@ -464,16 +491,16 @@ Array of post objects
 ```
 [
     {
-        "image_link": string,
+        "image": string,
         "description": string
     }
 ]
 ```
 ****
-**Add stylist post**
+**Add post to stylist portfolio**
 
 Route:
-`/stylist/:id/posts`
+`/stylist/:stylistId/portfolio`
 
 Method:
 `POST`
@@ -484,7 +511,7 @@ Allows a stylist to add a new image post
 Body:
 ```
 {
-    "image_link": string,
+    "image": string,
     "description": string,
     "stylist_id": integer
 }
@@ -494,15 +521,15 @@ Returns:
 Created post object
 ```
 {
-    "image_link": string,
+    "image": string,
     "description": string
 }
 ```
 ****
-**Update stylist post**
+**Update portfolio post**
 
 Route:
-`/stylist/:stylistId/posts/:postId`
+`/stylist/:stylistId/portfolio/:postId`
 
 Method:
 `PUT`
@@ -513,7 +540,7 @@ Allows a stylist to update an image post
 Body:
 ```
 {
-    "image_link": string,
+    "image": string,
     "description": string,
     "stylist_id": integer
 }
@@ -523,15 +550,15 @@ Returns:
 Updated post object
 ```
 {
-    "image_link": string,
+    "image": string,
     "description": string
 }
 ```
 ****
-**Delete stylist post**
+**Delete portfolio post**
 
 Route:
-`/stylist/:stylistId/posts/:postId`
+`/stylist/:stylistId/portfolio/:postId`
 
 Method:
 `DELETE`
@@ -543,7 +570,7 @@ Returns:
 Deleted post object
 ```
 {
-    "image_link": string,
+    "image": string,
     "description": string
 }
 ```
