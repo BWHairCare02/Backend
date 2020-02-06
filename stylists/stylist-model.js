@@ -12,6 +12,11 @@ function findBy(filter) {
 	return db("stylists").where(filter);
 }
 
+
+function findByUsername() {
+	return db("stylists").select("username");
+}
+
 async function add(user) {
 	let ids = await db("stylists").insert(user, "id");
 	const [id] = ids;
@@ -80,6 +85,7 @@ module.exports = {
 	find,
 	findBy,
 	findById,
+	findByUsername,
 	findPostById,
 	updateProfile,
 	deleteProfile,

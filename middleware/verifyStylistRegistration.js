@@ -15,7 +15,8 @@ module.exports = (req, res, next) => {
 				"Please review your registration again. A username, password, location and email address are required."
 		});
 	} else if (stylist) {
-		Stylists.findBy(stylist)
+		console.log(stylist)
+		Stylists.findByUsername(stylist)
 			.then(stylist => {
 				if (!stylist) {
 					next();

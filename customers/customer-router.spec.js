@@ -5,10 +5,10 @@ describe("customer router", () => {
 	describe("POST to /customer/register", () => {
 		it("should include the provided username in the response", async () => {
 			const info = {
-				username: `testingUser${new Date()}`,
+				username: `testingUser${ Date()}`,
 				password: "testie123",
 				location: "TX",
-				email:  `testingEmail${new Date()}@abs.com`
+				email:  `testingEmail${ Date()}@abs.com`
 			};
 			const newUser = await request(server)
 				.post("/customer/register")

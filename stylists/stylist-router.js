@@ -118,7 +118,7 @@ router.post("/:stylistId/portfolio", authenticate, verifyPostData, (req, res) =>
 });
 
 //Update an image post
-router.put("/:stylistId/portfolio/:postId",verifyStylisy,authenticate, verifyPost, (req, res) => {
+router.put("/:stylistId/portfolio/:postId",verifyStylist, authenticate, verifyPost, (req, res) => {
 	const id = req.params.postId;
 	const update = req.body;
 
