@@ -9,7 +9,7 @@ const {validatePortfolioItem, validateNewStylist } = require('../middleware/veri
 
 //Endpoints
 //Stylist registration
-router.post('/register', (req, res) => {
+router.post('/register', validateNewStylist, (req, res) => {
     let user = req.body;
 
     const hash = bc.hashSync(user.password, 8);

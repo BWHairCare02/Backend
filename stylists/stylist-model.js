@@ -1,7 +1,7 @@
 const db = require("../data/dbConfig");
 
 function get() {
-	return db("stylists").select("username", "location", "email");
+	return db("stylists").select("username", "location", "email","id");
 }
 
 function find() {

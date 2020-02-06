@@ -24,17 +24,17 @@ let errors = [];
     
     if(Stylists.findBy(username)){
         errors.push('Username has already been taken. Please pick another.')
-    }
-    // }
-
-    // Stylists.findBy(username)
-    //     .then(username => {
-    //         if (!username) {
-    //             next();
-    //         } else {
-    //             errors.push('Username already taken')
-    //         }
-    //     })
+    } else if(username){
+        Stylists.findBy(username)
+        .then(username=>{
+            if(!username){
+                next();
+            }else{
+                res.status(400).json({error:"Please choose another username. This one is taken."})
+            }
+        })
+    } 
+   
 
 	let success = errors.length === 0;
 	let errorMessage = success
