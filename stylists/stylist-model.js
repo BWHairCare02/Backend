@@ -13,8 +13,8 @@ function findBy(filter) {
 }
 
 
-function findByUsername() {
-	return db("stylists").select("username");
+function findByUsername(username) {
+	return db("stylists").select("username").where("username", '=', username);
 }
 
 async function add(user) {

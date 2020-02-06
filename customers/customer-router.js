@@ -10,7 +10,8 @@ const {
 	verifyCustomerRegister,
 	verifyReview,
 	verifyLogin,
-	verifyReviewData
+	verifyReviewData,
+	verifyCustomerUsername
 } = require('../middleware');
 
 //Endpoints

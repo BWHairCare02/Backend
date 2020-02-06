@@ -9,7 +9,8 @@ const {
   verifyStylistRegistration,
 	verifyLogin,
 	verifyPostData,
-	verifyPost
+  verifyPost,
+  verifyStylistUsername
 } = require("../middleware");
 
 //Endpoints

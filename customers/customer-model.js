@@ -10,7 +10,8 @@ module.exports = {
 	findReviewById,
 	updateReview,
 	getReviews,
-	deleteReview
+	deleteReview,
+	findByUsername
 };
 
 function find() {
@@ -74,4 +75,8 @@ function deleteReview(id) {
 	return db('reviews')
 		.where('id', id)
 		.del();
+}
+
+function findByUsername(username) {
+	return db("stylists").select("username").where("username", '=', username);
 }
