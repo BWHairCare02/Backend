@@ -1,145 +1,152 @@
-const bc = require('bcryptjs');
-const router = require('express').Router();
-const jwt = require('jsonwebtoken')
-const authenticate = require('../customers/authenticate-middleware')
-const {jwtSecret} = require('../config/secrets')
-const Stylists = require("./stylist-model")
-const {validatePortfolioItem, validateNewStylist } = require('../middleware/verifyStylist')
-//const { verifyStylist } = require('../middleware/index')
+const bc = require("bcryptjs");
+const router = require("express").Router();
+const jwt = require("jsonwebtoken");
+const authenticate = require("../customers/authenticate-middleware");
+const { jwtSecret } = require("../config/secrets");
+const Stylists = require("./stylist-model");
+const {
+  verifyStylist,
+  verifyStylistRegistration,
+	verifyLogin,
+	verifyPostData,
+	verifyPost
+} = require("../middleware");
 
 //Endpoints
 //Stylist registration
-router.post('/register', validateNewStylist, (req, res) => {
-    let user = req.body;
+router.post("/register", verifyStylistRegistration, (req, res) => {
+	let user = req.body;
 
-    const hash = bc.hashSync(user.password, 8);
+	const hash = bc.hashSync(user.password, 8);
 
-    user.password = hash;
+	user.password = hash;
 
-    Stylists.add(user)
-        .then(saved => res.status(201).json(saved))
-        .catch(err => res.status(500).json(err))
-})
+	Stylists.add(user)
+		.then(saved => res.status(201).json(saved))
+		.catch(err => res.status(500).json(err));
+});
 
 //Stylist login
-router.post('/login', (req, res) => {
-    let { username, password } = req.body;
-  
-    Stylists.findBy({ username })
-      .first()
-      .then(user => {
-        if (user && bc.compareSync(password, user.password)) {
-          const token = signToken(user)
-  
-          res.status(200).json({ message: `Welcome ${user.username}`, token, user: user})
-        } else {
-          res.status(401).json({ message: 'Invalid credentials' })
-        }
-      })
-      .catch(err => res.status(500).json(err))
-  });
+router.post("/login", verifyLogin, (req, res) => {
+	let { username, password } = req.body;
 
-  //Get all stylists
-  router.get('/', (req, res) => {
-    Stylists.get()
-      .then(stylists => res.status(200).json(stylists))
-      .catch(err => res.status(500).json(err))
-  })
+	Stylists.findBy({ username })
+		.first()
+		.then(user => {
+			if (user && bc.compareSync(password, user.password)) {
+				const token = signToken(user);
 
-  //Get a stylist by ID
-  router.get('/:stylistId', (req, res) => {
-    const id = req.params.stylistId;
+				res
+					.status(200)
+					.json({ message: `Welcome ${user.username}`, token, user: user });
+			} else {
+				res.status(401).json({ message: "Invalid credentials" });
+			}
+		})
+		.catch(err => res.status(500).json(err));
+});
 
-    Stylists.findById(id)
-      .then(stylist => res.status(200).json(stylist))
-      .catch(err => res.status(500).json(err))
-  })
+//Get all stylists
+router.get("/", (req, res) => {
+	Stylists.get()
+		.then(stylists => res.status(200).json(stylists))
+		.catch(err => res.status(500).json(err));
+});
 
-  //Allow a stylist to update their profile
-  router.put('/:stylistId', (req, res) => {
-    const id = req.params.stylistId;
-    const update = req.body;
-
-    Stylists.updateProfile(id, update)
-      .then(stylist => res.status(200).json(stylist))
-      .catch(err => {
-        console.log(err);
-        res.status(500).json(err);
-      })
-  })
-
-  //Allows a stylist to delete their profile
-  router.delete('/:stylistId', (req, res) => {
-    const id = req.params.stylistId;
-
-    Stylists.deleteProfile(id)
-      .then(stylist => res.status(200).json(stylist))
-      .catch(err => res.status(500).json(err))
-  })
-
-  //Get all reviews for a stylist
-  router.get('/:stylistId/reviews', (req, res) => {
+//Get a stylist by ID
+router.get("/:stylistId", verifyStylist, (req, res) => {
 	const id = req.params.stylistId;
-	
+
+	Stylists.findById(id)
+		.then(stylist => res.status(200).json(stylist))
+		.catch(err => res.status(500).json(err));
+});
+
+//Allow a stylist to update their profile
+router.put("/:stylistId", (req, res) => {
+	const id = req.params.stylistId;
+	const update = req.body;
+
+	Stylists.updateProfile(id, update)
+		.then(stylist => res.status(200).json(stylist))
+		.catch(err => {
+			console.log(err);
+			res.status(500).json(err);
+		});
+});
+
+//Allows a stylist to delete their profile
+router.delete("/:stylistId", (req, res) => {
+	const id = req.params.stylistId;
+
+	Stylists.deleteProfile(id)
+		.then(stylist => res.status(200).json(stylist))
+		.catch(err => res.status(500).json(err));
+});
+
+//Get all reviews for a stylist
+router.get("/:stylistId/reviews", (req, res) => {
+	const id = req.params.stylistId;
+
 	Stylists.getReviews(id)
 		.then(reviews => res.status(200).json(reviews))
 		.catch(err => {
-      console.log(err);
-      res.status(500).json(err)
-    })
-  })
+			console.log(err);
+			res.status(500).json(err);
+		});
+});
 
-  //Retrieve a stylist's image posts
-  router.get('/:stylistId/portfolio', (req, res) => {
-    const id = req.params.stylistId;
+//Retrieve a stylist's image posts
+router.get("/:stylistId/portfolio", (req, res) => {
+	const id = req.params.stylistId;
 
-    Stylists.getPortfolio(id)
-      .then(portfolio => res.status(200).json(portfolio))
-      .catch(err => res.status(500).json(err))
-  })
+	Stylists.getPortfolio(id)
+		.then(portfolio => res.status(200).json(portfolio))
+		.catch(err => res.status(500).json(err));
+});
 
-  //Allows a stylist to add a new image post
-  router.post('/:stylistId/portfolio', (req, res) => {
-    const post = req.body;
+//Allows a stylist to add a new image post
+router.post("/:stylistId/portfolio", verifyPostData, (req, res) => {
+	const post = req.body;
 
-    Stylists.addPost(post)
-      .then(post => res.status(200).json(post))
-      .catch(err => {
-        console.log(err);
-        res.status(500).json(err);
-      })
-  })
+	Stylists.addPost(post)
+		.then(post => res.status(200).json(post))
+		.catch(err => {
+			console.log(err);
+			res.status(500).json(err);
+		});
+});
 
-  //Update an image post
-  router.put('/:stylistId/portfolio/:postId', (req, res) => {
-    const id = req.params.postId;
-    const update = req.body;
+//Update an image post
+router.put("/:stylistId/portfolio/:postId", verifyPost, (req, res) => {
+	const id = req.params.postId;
+	const update = req.body;
 
-    Stylists.updatePost(id, update)
-      .then(post => res.status(200).json(post))
-      .catch(err => res.status(500).json(err))
-  })
+	Stylists.updatePost(id, update)
+		.then(post => res.status(200).json(post))
+		.catch(err => res.status(500).json(err));
+});
 
-  //Delete an image post
-  router.delete('/:stylistId/portfolio/:postId', (req, res) => {
-    const id = req.params.postId;
+//Delete an image post
+router.delete("/:stylistId/portfolio/:postId", (req, res) => {
+	const id = req.params.postId;
 
-    Stylists.deletePost(id)
-      .then(post => res.status(200).json(post))
-      .catch(err => res.status(500).json(err))
-  })
-  
-  function signToken(user) {
-    const payload = {
-      subject: user.id,
-      username: user.username
-    }
-  
-    const options = {
-      expiresIn: '7d'
-    }
-  
-    return jwt.sign(payload, jwtSecret, options)
-  }
-  
-  module.exports = router;
+	Stylists.deletePost(id)
+		.then(post => res.status(200).json(post))
+		.catch(err => res.status(500).json(err));
+});
+
+function signToken(user) {
+	const payload = {
+		subject: user.id,
+		username: user.username
+	};
+
+	const options = {
+		expiresIn: "7d"
+	};
+
+	return jwt.sign(payload, jwtSecret, options);
+}
+
+module.exports = router;

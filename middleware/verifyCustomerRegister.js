@@ -28,7 +28,7 @@ module.exports = (req, res, next) => {
 			.catch(() =>
 				res
 					.status(500)
-					.json({ error: "There was an error finding the customer." })
+					.json({ error: "There was an error finding the customer." }) 
 			);
 	}
 };

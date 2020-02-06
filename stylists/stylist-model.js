@@ -53,6 +53,10 @@ function getPortfolio(id) {
 	return db("portfolio").where("stylist_id", id);
 }
 
+function findPostById(filter) {
+	return db("portfolio").where(filter);
+}
+
 function addPost(post) {
 	return db("portfolio")
 		.insert(post, "id");
@@ -76,6 +80,7 @@ module.exports = {
 	find,
 	findBy,
 	findById,
+	findPostById,
 	updateProfile,
 	deleteProfile,
 	getReviews,

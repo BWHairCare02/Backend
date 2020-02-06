@@ -9,7 +9,7 @@ const {
 	verifyCustomer,
 	verifyCustomerRegister,
 	verifyReview,
-	verifyCustomerLogin,
+	verifyLogin,
 	verifyReviewData
 } = require('../middleware');
 
@@ -30,7 +30,7 @@ router.post("/register", verifyCustomerRegister, (req, res) => {
 });
 
 //Customer login
-router.post("/login", verifyCustomerLogin, (req, res) => {
+router.post("/login", verifyLogin, (req, res) => {
 	let { username, password } = req.body;
 
 	Customers.findBy({ username })
