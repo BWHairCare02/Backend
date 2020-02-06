@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken')
 const authenticate = require('../customers/authenticate-middleware')
 const {jwtSecret} = require('../config/secrets')
 const Stylists = require("./stylist-model")
+const {validatePortfolioItem, validateNewStylist } = require('../middleware/verifyStylist')
 //const { verifyStylist } = require('../middleware/index')
 
 //Endpoints

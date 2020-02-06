@@ -3,11 +3,19 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const authenticate = require("./authenticate-middleware");
 const Customers = require("./customer-model");
-//const { verifyCustomer } = require('../middleware/index').default
+
+//Middleware imports
+const {
+	verifyCustomer,
+	verifyCustomerRegister,
+	verifyReview,
+	verifyCustomerLogin,
+	verifyReviewData
+} = require('../middleware');
 
 //Endpoints
 //New customer registration
-router.post("/register", (req, res) => {
+router.post("/register", verifyCustomerRegister, (req, res) => {
 	let customer = req.body;
 	const hash = bcrypt.hashSync(customer.password, 12);
 	customer.password = hash;
@@ -22,7 +30,7 @@ router.post("/register", (req, res) => {
 });
 
 //Customer login
-router.post("/login", (req, res) => {
+router.post("/login", verifyCustomerLogin, (req, res) => {
 	let { username, password } = req.body;
 
 	Customers.findBy({ username })
@@ -46,7 +54,7 @@ router.post("/login", (req, res) => {
 });
 
 //Get customer by ID
-router.get("/:customerId", authenticate, (req, res) => {
+router.get("/:customerId", authenticate, verifyCustomer, (req, res) => {
 	const id = req.params.customerId;
 
 	Customers.findById(id)
@@ -55,7 +63,7 @@ router.get("/:customerId", authenticate, (req, res) => {
 });
 
 //Update customer profile
-router.put("/:customerId", authenticate, (req, res) => {
+router.put("/:customerId", authenticate, verifyCustomer, (req, res) => {
 	const id = req.params.customerId;
 	const update = req.body;
 
@@ -65,7 +73,7 @@ router.put("/:customerId", authenticate, (req, res) => {
 });
 
 //Adds a customer's review
-router.post("/:customerId/reviews", (req, res) => {
+router.post("/:customerId/reviews", verifyCustomer, verifyReviewData, (req, res) => {
 	const review = req.body;
 
 	Customers.submitReview(review)
@@ -78,7 +86,7 @@ router.post("/:customerId/reviews", (req, res) => {
 });
 
 //Get all of a customer's reviews
-router.get("/:customerId/reviews", authenticate, (req, res) => {
+router.get("/:customerId/reviews", authenticate, verifyCustomer, (req, res) => {
 	const id = req.params.customerId;
 
 	Customers.getReviews(id)
@@ -87,7 +95,7 @@ router.get("/:customerId/reviews", authenticate, (req, res) => {
 });
 
 //get review by id
-router.get("/:customerId/reviews/:reviewId", authenticate, (req, res) => {
+router.get("/:customerId/reviews/:reviewId", authenticate, verifyCustomer, verifyReview, (req, res) => {
 	const id = req.params.reviewId;
 
 	Customers.findReviewById(id)
@@ -96,7 +104,7 @@ router.get("/:customerId/reviews/:reviewId", authenticate, (req, res) => {
 });
 
 //Allows a customer to update reviews
-router.put("/:customerId/reviews/:reviewId", authenticate, (req, res) => {
+router.put("/:customerId/reviews/:reviewId", authenticate, verifyCustomer, verifyReview, verifyReviewData, (req, res) => {
 	const id = req.params.reviewId;
 	const update = req.body;
 
@@ -109,7 +117,7 @@ router.put("/:customerId/reviews/:reviewId", authenticate, (req, res) => {
 });
 
 //Delete a customer's review
-router.delete("/:customerId/reviews/:reviewId", authenticate, (req, res) => {
+router.delete("/:customerId/reviews/:reviewId", authenticate, verifyCustomer, verifyReview, (req, res) => {
 	const id = req.params.reviewId;
 
 	Customers.deleteReview(id)
