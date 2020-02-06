@@ -47,14 +47,14 @@ router.post("/login", verifyLogin, (req, res) => {
 });
 
 //Get all stylists
-router.get("/", (req, res) => {
+router.get("/", authenticate, (req, res) => {
 	Stylists.get()
 		.then(stylists => res.status(200).json(stylists))
 		.catch(err => res.status(500).json(err));
 });
 
 //Get a stylist by ID
-router.get("/:stylistId", verifyStylist, (req, res) => {
+router.get("/:stylistId", authenticate, verifyStylist, (req, res) => {
 	const id = req.params.stylistId;
 
 	Stylists.findById(id)
@@ -63,7 +63,7 @@ router.get("/:stylistId", verifyStylist, (req, res) => {
 });
 
 //Allow a stylist to update their profile
-router.put("/:stylistId", (req, res) => {
+router.put("/:stylistId", authenticate, verifyStylist, (req, res) => {
 	const id = req.params.stylistId;
 	const update = req.body;
 
@@ -76,7 +76,7 @@ router.put("/:stylistId", (req, res) => {
 });
 
 //Allows a stylist to delete their profile
-router.delete("/:stylistId", (req, res) => {
+router.delete("/:stylistId", authenticate, verifyStylist, (req, res) => {
 	const id = req.params.stylistId;
 
 	Stylists.deleteProfile(id)
@@ -85,7 +85,7 @@ router.delete("/:stylistId", (req, res) => {
 });
 
 //Get all reviews for a stylist
-router.get("/:stylistId/reviews", (req, res) => {
+router.get("/:stylistId/reviews", verifyStylist, authenticate, (req, res) => {
 	const id = req.params.stylistId;
 
 	Stylists.getReviews(id)
@@ -97,7 +97,7 @@ router.get("/:stylistId/reviews", (req, res) => {
 });
 
 //Retrieve a stylist's image posts
-router.get("/:stylistId/portfolio", (req, res) => {
+router.get("/:stylistId/portfolio", verifyStylist, authenticate, (req, res) => {
 	const id = req.params.stylistId;
 
 	Stylists.getPortfolio(id)
@@ -106,7 +106,7 @@ router.get("/:stylistId/portfolio", (req, res) => {
 });
 
 //Allows a stylist to add a new image post
-router.post("/:stylistId/portfolio", verifyPostData, (req, res) => {
+router.post("/:stylistId/portfolio", authenticate, verifyPostData, (req, res) => {
 	const post = req.body;
 
 	Stylists.addPost(post)
@@ -118,7 +118,7 @@ router.post("/:stylistId/portfolio", verifyPostData, (req, res) => {
 });
 
 //Update an image post
-router.put("/:stylistId/portfolio/:postId", verifyPost, (req, res) => {
+router.put("/:stylistId/portfolio/:postId",verifyStylisy,authenticate, verifyPost, (req, res) => {
 	const id = req.params.postId;
 	const update = req.body;
 
@@ -128,7 +128,7 @@ router.put("/:stylistId/portfolio/:postId", verifyPost, (req, res) => {
 });
 
 //Delete an image post
-router.delete("/:stylistId/portfolio/:postId", (req, res) => {
+router.delete("/:stylistId/portfolio/:postId", authenticate,verifyStylist, (req, res) => {
 	const id = req.params.postId;
 
 	Stylists.deletePost(id)

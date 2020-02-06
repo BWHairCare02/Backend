@@ -73,7 +73,7 @@ router.put("/:customerId", authenticate, verifyCustomer, (req, res) => {
 });
 
 //Adds a customer's review
-router.post("/:customerId/reviews", verifyCustomer, verifyReviewData, (req, res) => {
+router.post("/:customerId/reviews", verifyCustomer, verifyReviewData, authenticate, (req, res) => {
 	const review = req.body;
 
 	Customers.submitReview(review)
