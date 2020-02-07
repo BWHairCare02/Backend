@@ -46,10 +46,8 @@ describe("stylist router", () => {
 		it("Should return 200 status on login", async () => {
 			const loggedIn = await request(server)
 				.post("/stylist/login")
-				.send({
-					username: "Sarahh",
-					password: "testie123"
-				});
+				.send({ username: "Stacy", password: "testie123" });
+			console.log(loggedIn.body);
 			return expect(loggedIn.body).toHaveProperty("token");
 		});
 	});
