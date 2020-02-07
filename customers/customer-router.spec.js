@@ -5,7 +5,7 @@ describe("customer router", () => {
 	describe("POST to /customer/register", () => {
 		it("should include the provided username in the response", async () => {
 			const info = {
-				username: `testingUser${ Date()}`,
+				username: `RegCustTest${ Date()}`,
 				password: "testie123",
 				location: "TX",
 				email:  `testingEmail${ Date()}@abs.com`
@@ -16,9 +16,20 @@ describe("customer router", () => {
 			console.log("New User: ", newUser.body, "info:", info);
 			return expect(newUser.body.saved.username).toEqual(info.username);
 		});
+		it("Should return 201 on creation", async () => {
+			const response = await request(server)
+				.post("/customer/register")
+				.send({
+					username: `CreationTest${new Date()}`,
+					password: "password",
+					location: "Test city",
+					email:  `testingEmail${new Date()}@abs.com`
+				});
+			expect(response.status).toBe(201);
+		});
 		it("should include an id in the user object", async () => {
 			const info = {
-				username: `testingUser${new Date()}`,
+				username: `IdTesting${new Date()}`,
 				password: "testie123",
 				location: "TX",
 				email:  `testingEmail${new Date()}@abs.com`
@@ -26,33 +37,21 @@ describe("customer router", () => {
 			const newUser = await request(server)
 				.post("/customer/register")
 				.send(info);
-				console.log("fsdfsdfg")
-			return expect(newUser.body.user.id).toHaveProperty("id");
+				console.log(newUser.body.saved)
+			return expect(newUser.body.saved).toHaveProperty("id");
 		});
 	});
 });
 
-describe("Registration", () => {
-	it("Should return 201 on creation", async () => {
-		const response = await request(server)
-			.post("/customer/register")
-			.send({
-				username: `testingUser${new Date()}`,
-				password: "password",
-				location: "Test city",
-				email:  `testingEmail${new Date()}@abs.com`
-			});
-		expect(response.status).toBe(201);
-	});
-});
+
 
 describe("POST to /customer/login", () => {
 	it("Should return 200 status on login", async () => {
 		const loggedIn = await request(server)
 			.post("/customer/login")
 			.send({
-				username: "testinguser",
-				password: "password"
+				username: "Sarahh",
+				password: "testie123"
 			});
 		return expect(loggedIn.body).toHaveProperty("token");
 	});
