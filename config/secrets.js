@@ -1,3 +1,3 @@
 module.exports = {
-    jwtSecret: process.env.JWT_SECRET || 'Is it secret, is it safe?'
+    jwtSecret: process.env.JWT_SECRET || "FLCL is not rewatchable. Fight me."
 }
