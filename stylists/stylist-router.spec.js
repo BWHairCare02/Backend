@@ -42,13 +42,5 @@ describe("stylist router", () => {
 		});
 	});
 
-	describe("POST to /stylist/login", () => {
-		it("Should return 200 status on login", async () => {
-			const loggedIn = await request(server)
-				.post("/stylist/login")
-				.send({ username: "Stacy", password: "testie123" });
-			console.log(loggedIn.body);
-			return expect(loggedIn.body).toHaveProperty("token");
-		});
-	});
+
 });
